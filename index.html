@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Pagamento - Móveis (Online)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .sync-indicator {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .progress-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .progress-bar-container {
+            background: #e0e0e0;
+            border-radius: 50px;
+            height: 40px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1em;
+            min-width: 60px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minItems(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .payment-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .payments-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .payment-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 15px;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .payment-date {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 100px;
+        }
+
+        .payment-details {
+            flex: 1;
+        }
+
+        .payment-value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #28a745;
+        }
+
+        .payment-obs {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.6em;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-item {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Controle de Pagamento - Móveis</h1>
+            <p>Sincronização online em tempo real</p>
+            <div class="sync-badge">
+                <div class="sync-indicator"></div>
+                <span>Online • Todos veem em tempo real</span>
+            </div>
+
+            <div class="info-box">
+                <div class="info-item">
+                    <div class="info-label">Móveis</div>
+                    <div class="info-value">R$ 9.000,00</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Jantar Família</div>
+                    <div class="info-value">R$ 1.000,00</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Total Geral</div>
+                    <div class="info-value">R$ 10.000,00</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Prazo</div>
+                    <div class="info-value">1 Ano</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <div class="section-title">
+                <span>🛋️</span>
+                <span>Progresso - Móveis (R$ 9.000)</span>
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalPaid">R$ 0,00</div>
+                    <div class="stat-label">Pago (Móveis)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalRemaining">R$ 9.000,00</div>
+                    <div class="stat-label">Restante (Móveis)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="paymentCount">0</div>
+                    <div class="stat-label">Pagamentos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="lastPayment">-</div>
+                    <div class="stat-label">Último PIX</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-section" id="dinnerSection" style="display: none;">
+            <div class="section-title">
+                <span>🍽️</span>
+                <span>Progresso - Jantar Família (R$ 1.000)</span>
+            </div>
+
+            <div class="alert alert-success" style="margin-bottom: 20px;">
+                <strong>🎉 Parabéns! Móveis pagos!</strong><br>
+                Agora vamos completar o valor do jantar em família! 🍴
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="dinnerProgressBar" style="width: 0%; background: linear-gradient(90deg, #28a745 0%, #20c997 100%)">0%</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);">
+                    <div class="stat-value" id="dinnerPaid" style="color: #28a745;">R$ 0,00</div>
+                    <div class="stat-label">Pago (Jantar)</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);">
+                    <div class="stat-value" id="dinnerRemaining" style="color: #28a745;">R$ 1.000,00</div>
+                    <div class="stat-label">Restante (Jantar)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-section" id="completedSection" style="display: none;">
+            <div class="section-title">
+                <span>🎊</span>
+                <span>TUDO PAGO!</span>
+            </div>
+
+            <div class="alert" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; text-align: center; padding: 30px;">
+                <div style="font-size: 3em; margin-bottom: 15px;">🎉🎊🥳</div>
+                <strong style="font-size: 1.5em;">PARABÉNS!</strong><br><br>
+                Móveis pagos (R$ 9.000) ✅<br>
+                Jantar em família garantido (R$ 1.000) ✅<br><br>
+                <strong>Total: R$ 10.000 QUITADOS!</strong>
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <div class="section-title">
+                <span>➕</span>
+                <span>Registrar Novo Pagamento</span>
+            </div>
+
+            <div id="loadingAdd" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Salvando online...</p>
+            </div>
+
+            <div class="payment-form" id="paymentForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="paymentDate">Data do Pagamento *</label>
+                        <input type="date" id="paymentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentValue">Valor (R$) *</label>
+                        <input type="number" id="paymentValue" step="0.01" min="0.01" placeholder="0,00" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="paymentObs">Observação (opcional)</label>
+                        <textarea id="paymentObs" rows="2" placeholder="Ex: PIX do dia 15, Pagamento parcial, etc."></textarea>
+                    </div>
+                </div>
+                <button class="btn" onclick="addPayment()">💸 Registrar Pagamento</button>
+            </div>
+
+            <div id="successMessage" class="alert alert-success" style="display: none;">
+                <strong>✅ Pagamento salvo! Todos com o link já podem ver.</strong>
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <div class="section-title">
+                <span>📋</span>
+                <span>Histórico de Pagamentos</span>
+            </div>
+
+            <div id="loadingList" class="loading">
+                <div class="spinner"></div>
+                <p>Carregando da nuvem...</p>
+            </div>
+
+            <div class="payments-list" id="paymentsList" style="display: none;">
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <strong>Lucas Hoppe, vai muito além de somente um rostinho bonito ✨</strong>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXq8vK7mH3gN2oP4jR5sT6uV8wX9yZ0aB",
+            authDomain: "payment-tracker-demo.firebaseapp.com",
+            databaseURL: "https://payment-tracker-demo-default-rtdb.firebaseio.com",
+            projectId: "payment-tracker-demo",
+            storageBucket: "payment-tracker-demo.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456789"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const paymentsRef = database.ref('payments');
+
+        const FURNITURE_VALUE = 9000;
+        const DINNER_VALUE = 1000;
+        const TOTAL_VALUE = 10000;
+        let isLoading = false;
+
+        // Set today as default date
+        document.getElementById('paymentDate').valueAsDate = new Date();
+
+        // Listen for real-time updates
+        paymentsRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            const payments = data ? Object.values(data) : [];
+            
+            document.getElementById('loadingList').style.display = 'none';
+            document.getElementById('paymentsList').style.display = 'block';
+            
+            renderPayments(payments);
+            updateStats(payments);
+        });
+
+        async function addPayment() {
+            if (isLoading) return;
+
+            const date = document.getElementById('paymentDate').value;
+            const value = parseFloat(document.getElementById('paymentValue').value);
+            const obs = document.getElementById('paymentObs').value;
+
+            if (!date || !value || value <= 0) {
+                alert('Por favor, preencha a data e o valor do pagamento!');
+                return;
+            }
+
+            isLoading = true;
+            document.getElementById('loadingAdd').style.display = 'block';
+            document.getElementById('paymentForm').style.display = 'none';
+
+            try {
+                const newPayment = {
+                    id: Date.now(),
+                    date: date,
+                    value: value,
+                    obs: obs,
+                    timestamp: new Date().toISOString()
+                };
+
+                // Save to Firebase
+                await paymentsRef.child(newPayment.id.toString()).set(newPayment);
+
+                // Clear form
+                document.getElementById('paymentValue').value = '';
+                document.getElementById('paymentObs').value = '';
+                document.getElementById('paymentDate').valueAsDate = new Date();
+
+                // Show success
+                const msg = document.getElementById('successMessage');
+                msg.style.display = 'block';
+                setTimeout(() => msg.style.display = 'none', 3000);
+
+            } catch (error) {
+                alert('Erro ao salvar: ' + error.message);
+                console.error(error);
+            }
+
+            isLoading = false;
+            document.getElementById('loadingAdd').style.display = 'none';
+            document.getElementById('paymentForm').style.display = 'block';
+        }
+
+        async function deletePayment(id) {
+            if (!confirm('Tem certeza que deseja excluir este pagamento?')) return;
+
+            try {
+                await paymentsRef.child(id.toString()).remove();
+            } catch (error) {
+                alert('Erro ao excluir: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        function renderPayments(payments) {
+            const list = document.getElementById('paymentsList');
+
+            if (payments.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💸</div>
+                        <p>Nenhum pagamento registrado ainda.</p>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Adicione o primeiro pagamento acima!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by date (most recent first)
+            payments.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            list.innerHTML = payments.map(payment => {
+                const date = new Date(payment.date + 'T00:00:00');
+                const formattedDate = date.toLocaleDateString('pt-BR');
+                const formattedValue = payment.value.toLocaleString('pt-BR', { 
+                    style: 'currency', 
+                    currency: 'BRL' 
+                });
+
+                return `
+                    <div class="payment-item">
+                        <div class="payment-date">📅 ${formattedDate}</div>
+                        <div class="payment-details">
+                            <div class="payment-value">${formattedValue}</div>
+                            ${payment.obs ? `<div class="payment-obs">${payment.obs}</div>` : ''}
+                        </div>
+                        <button class="delete-btn" onclick="deletePayment(${payment.id})">🗑️</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats(payments) {
+            const totalPaid = payments.reduce((sum, p) => sum + p.value, 0);
+            
+            // Calculate furniture payment
+            const furniturePaid = Math.min(totalPaid, FURNITURE_VALUE);
+            const furnitureRemaining = Math.max(FURNITURE_VALUE - totalPaid, 0);
+            const furniturePercentage = Math.min((furniturePaid / FURNITURE_VALUE) * 100, 100);
+
+            // Calculate dinner payment
+            const dinnerPaid = Math.max(0, totalPaid - FURNITURE_VALUE);
+            const dinnerRemaining = Math.max(DINNER_VALUE - dinnerPaid, 0);
+            const dinnerPercentage = totalPaid > FURNITURE_VALUE ? Math.min((dinnerPaid / DINNER_VALUE) * 100, 100) : 0;
+
+            // Update furniture stats
+            document.getElementById('totalPaid').textContent = furniturePaid.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+
+            document.getElementById('totalRemaining').textContent = furnitureRemaining.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+
+            document.getElementById('paymentCount').textContent = payments.length;
+
+            if (payments.length > 0) {
+                const lastPayment = payments.reduce((latest, p) => {
+                    return new Date(p.date) > new Date(latest.date) ? p : latest;
+                });
+                const lastDate = new Date(lastPayment.date + 'T00:00:00');
+                document.getElementById('lastPayment').textContent = lastDate.toLocaleDateString('pt-BR');
+            } else {
+                document.getElementById('lastPayment').textContent = '-';
+            }
+
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = furniturePercentage + '%';
+            progressBar.textContent = furniturePercentage.toFixed(1) + '%';
+
+            if (furniturePercentage >= 100) {
+                progressBar.style.background = 'linear-gradient(90deg, #28a745 0%, #20c997 100%)';
+            }
+
+            // Show/hide dinner section
+            const dinnerSection = document.getElementById('dinnerSection');
+            const completedSection = document.getElementById('completedSection');
+
+            if (totalPaid >= TOTAL_VALUE) {
+                dinnerSection.style.display = 'none';
+                completedSection.style.display = 'block';
+            } else if (totalPaid >= FURNITURE_VALUE) {
+                dinnerSection.style.display = 'block';
+                completedSection.style.display = 'none';
+
+                document.getElementById('dinnerPaid').textContent = dinnerPaid.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                });
+
+                document.getElementById('dinnerRemaining').textContent = dinnerRemaining.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                });
+
+                const dinnerProgressBar = document.getElementById('dinnerProgressBar');
+                dinnerProgressBar.style.width = dinnerPercentage + '%';
+                dinnerProgressBar.textContent = dinnerPercentage.toFixed(1) + '%';
+            } else {
+                dinnerSection.style.display = 'none';
+                completedSection.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
